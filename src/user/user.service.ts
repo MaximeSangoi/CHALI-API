@@ -1,8 +1,8 @@
-import { Component, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from './user.model';
 // import * as bcrypt from 'bcrypt';
 
-@Component()
+@Injectable()
 export class UserService {
     private saltRounds = 10;
 

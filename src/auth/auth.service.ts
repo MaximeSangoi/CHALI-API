@@ -1,8 +1,8 @@
 import * as jwt from 'jsonwebtoken';
-import { Component } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 
-@Component()
+@Injectable()
 export class AuthService {
     constructor(private readonly userService: UserService) { }
 
@@ -22,9 +22,7 @@ export class AuthService {
             if (signedUser && signedUser.username) {
                 resolve(Boolean(this.userService.getUserByUsername(signedUser.username)));
             }
-    
             resolve(true);
         });
-        
     }
 }
