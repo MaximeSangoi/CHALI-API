@@ -19,8 +19,7 @@ export class AuthController {
         if (user) {
             const hashOK = await this.userService.compareHash(body.password, user.passwordHash);
             if (hashOK) {
-                //return res.status(HttpStatus.OK).json(await this.authService.createToken(user.id, user.username));
-                return res.status(HttpStatus.OK).json('coucou');
+                return res.status(HttpStatus.OK).json(await this.authService.createToken(user.id, user.username));
             }
         }
 
