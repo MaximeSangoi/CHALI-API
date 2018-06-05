@@ -1,44 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UserSchema } from './user.schema';
+import { User } from './user.interface';
 // import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
     private saltRounds = 10;
 
-    constructor() {}
+    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-    async getUsers(): Promise<User[]> {
-        return new Promise<User[]>((resolve, reject) => {
-            resolve([new User()]);
-        });
-        // return await this.userRepository.find();
+    async create(createUser: User): Promise<User> {
+        const createduser = new this.userModel(createUser);
+        return await createduser.save();
     }
 
-    async getUserByUsername(username: string): Promise<User> {
-        return new Promise<User>((resolve, reject) => {
-            const userToReturn = new User();
-            userToReturn.email = 'coucou@yopmail.com';
-            userToReturn.id = 3;
-            userToReturn.username = 'Wepa';
-            resolve(userToReturn);
-        });
-        // return (await this.userRepository.find({ username }))[0];
+    async getAll(): Promise<User[]> {
+        return await this.userModel.find().exec();
     }
 
-    async createUser(user: User): Promise<User> {
-        // user.passwordHash = await this.getHash(user.password);
-        return new Promise<User>((resolve, reject) => {
-            const userToReturn = new User();
-            userToReturn.email = 'coucou@yopmail.com';
-            userToReturn.id = 3;
-            userToReturn.username = 'Wepa';
-            resolve(userToReturn);
-        });
+    async getById(userId: string): Promise<User> {
+        return await this.userModel.findById(userId).exec();
+    }
 
-        // clear password as we don't persist passwords
-        // user.password = undefined;
-        // return this.userRepository.save(user);
+    async update(userId: string, newUser: User): Promise<User> {
+        return await this.userModel.findByIdAndUpdate(userId, newUser).exec();
+    }
+
+    async remove(userId: string): Promise<User> {
+        return await this.userModel.findByIdAndRemove(userId).exec();
     }
 
     async getHash(password: string|undefined): Promise<string> {

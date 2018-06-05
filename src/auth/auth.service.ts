@@ -6,11 +6,11 @@ import { UserService } from '../user/user.service';
 export class AuthService {
     constructor(private readonly userService: UserService) { }
 
-    async createToken(id: number, username: string) {
+    async createToken(username: string) {
         const expiresIn = 60 * 60;
-        const secretOrKey = 'secret';
+        const privateKey = 'NhuPhlw7jARCjxQEBh4EbSOc40D2AEGD08kVI4gBKmyhG0MZ9hKJEJ71KXPBltv';
         const user = { username };
-        const token = jwt.sign(user, secretOrKey, { expiresIn });
+        const token = jwt.sign(user, privateKey, { expiresIn });
         return {
             expires_in: expiresIn,
             access_token: token,
@@ -20,7 +20,7 @@ export class AuthService {
     async validateUser(signedUser): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             if (signedUser && signedUser.username) {
-                resolve(Boolean(this.userService.getUserByUsername(signedUser.username)));
+                resolve(Boolean(this.userService.getById(signedUser.id)));
             }
             resolve(true);
         });

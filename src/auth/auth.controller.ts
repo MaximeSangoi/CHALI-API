@@ -1,7 +1,7 @@
 import { Controller, Post, HttpStatus, HttpCode, Get, Response, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
-import { User } from '../user/user.model';
+import { User } from '../user/user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -14,12 +14,11 @@ export class AuthController {
         if (!(body && body.username && body.password)) {
             return res.status(HttpStatus.FORBIDDEN).json({ message: 'Username and password are required!' });
         }
-
-        const user = await this.userService.getUserByUsername(body.username);
+        const user = await this.userService.getById(body.username);
         if (user) {
-            const hashOK = await this.userService.compareHash(body.password, user.passwordHash);
+            const hashOK = await this.userService.compareHash(body.password, user.password);
             if (hashOK) {
-                return res.status(HttpStatus.OK).json(await this.authService.createToken(user.id, user.username));
+                return res.status(HttpStatus.OK).json(await this.authService.createToken(user.username));
             }
         }
 
@@ -32,14 +31,11 @@ export class AuthController {
             return res.status(HttpStatus.FORBIDDEN).json({ message: 'Username and password are required!' });
         }
 
-        let user = await this.userService.getUserByUsername(body.username);
+        let user = await this.userService.getById(body.username);
         if (user) {
             return res.status(HttpStatus.FORBIDDEN).json({ message: 'Username exists' });
         } else {
-            user = await this.userService.createUser(body);
-            if (user) {
-                user.passwordHash = undefined;
-            }
+            user = await this.userService.create(body);
         }
 
         return res.status(HttpStatus.OK).json(user);
