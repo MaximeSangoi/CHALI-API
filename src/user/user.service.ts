@@ -1,48 +1,85 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserSchema } from './user.schema';
 import { User } from './user.interface';
-// import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-    private saltRounds = 10;
+  private saltRounds = 10;
+  private readonly users: User[];
 
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) {
+    this.users = [
+      {
+        name: 'john',
+        firstname: 'john',
+        lastname: 'john',
+        username: 'john',
+        email: 'john@john.com',
+        age: 15,
+        liked_posts: '',
+        password: 'changeme',
+      },
+      {
+        name: 'chris',
+        firstname: 'chris',
+        lastname: 'chris',
+        username: 'chris',
+        email: 'chris@chris.com',
+        age: 15,
+        liked_posts: '',
+        password: 'secret',
+      },
+      {
+        name: 'maria',
+        firstname: 'maria',
+        lastname: 'maria',
+        username: 'maria',
+        email: 'maria@maria.com',
+        age: 15,
+        liked_posts: '',
+        password: 'guess',
+      },
+    ];
+  }
 
-    async create(createUser: User): Promise<User> {
-        const createduser = new this.userModel(createUser);
-        return await createduser.save();
-    }
+  async create(createUser: User): Promise<User> {
+    const createduser = new this.userModel(createUser);
+    return await createduser.save();
+  }
 
-    async getAll(): Promise<User[]> {
-        return await this.userModel.find().exec();
-    }
+  async getAll(): Promise<User[]> {
+    return await this.userModel.find().exec();
+  }
 
-    async getById(userId: string): Promise<User> {
-        return await this.userModel.findById(userId).exec();
-    }
+  async getByUsername(username: string): Promise<User> {
+    return this.users.find((user) => user.username === username);
+  }
 
-    async update(userId: string, newUser: User): Promise<User> {
-        return await this.userModel.findByIdAndUpdate(userId, newUser).exec();
-    }
+  async getById(userId: string): Promise<User> {
+    return await this.userModel.findById(userId).exec();
+  }
 
-    async remove(userId: string): Promise<User> {
-        return await this.userModel.findByIdAndRemove(userId).exec();
-    }
+  async update(userId: string, newUser: User): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(userId, newUser).exec();
+  }
 
-    async getHash(password: string|undefined): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            resolve('coucou');
-        });
-        // return bcrypt.hash(password, this.saltRounds);
-    }
+  async remove(userId: string): Promise<User> {
+    return await this.userModel.findByIdAndRemove(userId).exec();
+  }
 
-    async compareHash(password: string|undefined, hash: string|undefined): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            resolve(true);
-        });
-        // return bcrypt.compare(password, hash);
-    }
+  async getHash(password: string | undefined): Promise<string> {
+    return bcrypt.hash(password, this.saltRounds);
+    // return new Promise<string>((resolve, reject) => {
+    //   resolve('coucou');
+    // });
+  }
+
+  async compareHash(
+    password: string | undefined,
+    hash: string | undefined,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  }
 }

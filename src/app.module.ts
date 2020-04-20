@@ -8,7 +8,10 @@ import { UserModule } from 'user/user.module';
   imports: [
     AuthModule,
     UserModule,
-    MongooseModule.forRoot('mongodb://localhost:27017')
+    MongooseModule.forRoot('mongodb://localhost:27017', {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    }),
   ],
   controllers: [AppController],
 })
