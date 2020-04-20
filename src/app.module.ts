@@ -8,7 +8,7 @@ import { UserModule } from 'user/user.module';
   imports: [
     AuthModule,
     UserModule,
-    MongooseModule.forRoot('mongodb://localhost:27017', {
+    MongooseModule.forRoot('mongodb://localhost:27017/leChatLibre', {
       useUnifiedTopology: true,
       useNewUrlParser: true,
     }),

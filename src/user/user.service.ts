@@ -71,9 +71,6 @@ export class UserService {
 
   async getHash(password: string | undefined): Promise<string> {
     return bcrypt.hash(password, this.saltRounds);
-    // return new Promise<string>((resolve, reject) => {
-    //   resolve('coucou');
-    // });
   }
 
   async compareHash(
