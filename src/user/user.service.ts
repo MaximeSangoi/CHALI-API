@@ -9,40 +9,7 @@ export class UserService {
   private saltRounds = 10;
   private readonly users: User[];
 
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {
-    this.users = [
-      {
-        name: 'john',
-        firstname: 'john',
-        lastname: 'john',
-        username: 'john',
-        email: 'john@john.com',
-        age: 15,
-        liked_posts: '',
-        password: 'changeme',
-      },
-      {
-        name: 'chris',
-        firstname: 'chris',
-        lastname: 'chris',
-        username: 'chris',
-        email: 'chris@chris.com',
-        age: 15,
-        liked_posts: '',
-        password: 'secret',
-      },
-      {
-        name: 'maria',
-        firstname: 'maria',
-        lastname: 'maria',
-        username: 'maria',
-        email: 'maria@maria.com',
-        age: 15,
-        liked_posts: '',
-        password: 'guess',
-      },
-    ];
-  }
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async create(createUser: User): Promise<User> {
     const createduser = new this.userModel(createUser);
@@ -54,7 +21,7 @@ export class UserService {
   }
 
   async getByUsername(username: string): Promise<User> {
-    return this.users.find((user) => user.username === username);
+    return this.userModel.findOne({ username: username });
   }
 
   async getById(userId: string): Promise<User> {
