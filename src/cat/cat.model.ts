@@ -4,22 +4,29 @@ export const CatSchema = new Schema(
   {
     name: String,
     birthdate: String,
-    email: String,
-    age: Number,
-    username: { type: String, required: true },
-    password: { type: String, required: true },
-    liked_posts: [{ type: String, ref: Schema.Types.ObjectId }],
+    knownBirthdate: Boolean,
+    coat: [{ type: String }],
+    tatooed: Boolean,
+    tatoo: String,
+    microchip: Boolean,
+    fiv: Boolean,
+    status: {
+      type: String,
+      enum: ['TOADOPT', 'HOSTFAMILY', 'ADOPTED', 'DEAD'],
+      default: 'TOADOPT',
+    },
   },
   { timestamps: true },
 );
 
 export interface Cat extends Document {
   readonly name: string;
-  readonly firstname: string;
-  readonly lastname: string;
-  readonly email: string;
-  readonly age: number;
-  readonly username: string;
-  readonly password: string;
-  readonly liked_posts: string;
+  readonly birthdate: string;
+  readonly knownBirthdate: boolean;
+  readonly coat: string;
+  readonly tatooed: boolean;
+  readonly tatoo: number;
+  readonly microchip: boolean;
+  readonly fiv: boolean;
+  readonly status: string;
 }

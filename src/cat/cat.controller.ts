@@ -16,7 +16,7 @@ export class CatController {
   @UseGuards(JwtAuthGuard)
   @Get()
   getAll(): Promise<Cat[]> {
-    return this.catService.getAll();
+    return this.catService.getAll({ status: { $not: { $eq: 'DEAD' } } });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -32,7 +32,7 @@ export class CatController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/remove/:catID')
+  @Get('/remove/:catID')
   remove(@Param('catID') catID: string): Promise<Cat> {
     return this.catService.remove(catID);
   }
